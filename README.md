@@ -8,6 +8,8 @@ This is a docker-compose setup for development work using Vault and Consul.
 ## Start Consul and Vault
 
 ```
+export VAULT_ADDR='https://127.0.0.1:8200'
+export VAULT_CAPATH="${PWD}/certs/ca.crt"
 docker compose up -d
 ```
 
@@ -15,23 +17,18 @@ docker compose up -d
 
 * **NOTE**: It is a good idea to use the same version of the vault CLI as we are using for the vault server!
 
-* You can run `vault init` as a sanity check. You may need to specify `VAULT_ADDR=http://127.0.0.1:8200`. You should receive a message that Vault is already initialized, indicating that the restore from backup was successful. If you receive unseal keys and a root token, you did not correctly restore from a backup.
-* Run `vault unseal` three times in a row, giving Vault unseal keys for the environment the backup was taken from.
-* After vault is unsealed, run `vault auth` with the Root Token for the environment the backup was taken from.
+* Run `vault operator init` to create the unseal keys and initial root token.
+  * If you see `* Vault is already initialized` then you have done this already.
+  * Take a note of these! If you lose, you will need to start again.
+* Run `vault operator unseal` three times in a row, giving Vault a different one of the 5 unseal keys.
+  * The output will container a line that reads `Unseal Progress`. You need to get this to `Unseal Progress    3/3`.
+* After vault is unsealed, run `vault login` with the Initial Root Token that you got after running `vault operator init` earlier.
+
+### Backups
+
 * **NOTE**: This container does not persist ANY data as the consul node is in dev mode.
-  * If you want to save the data for later use, install the consul client locally and then try: `consul snapshot save backup.snap`
+  * If you want to save the data for later use, install the consul client locally and then try: `consul snapshot save backups/vault-consul-backup-$(date +%Y%m%d%H%M).snap`
   * `docker-compose pause` and `docker-compose unpause` are the only ways that you can stop the containers from running and still keep the data around. This does not survive a reboot, meaning you will need to restore and unseal after containers stop.
-
-## Python Setup
-* We need a modern openssl
-    * You can use python virtualenvs if you know how, or:
-
-```
-brew update
-brew install openssl # We require a modern openssl
-brew install python # We need python compilied against that openssl
-export PATH="/usr/local/bin:${PATH}" # Can also add to .bashrc
-```
 
 ---
 
@@ -46,7 +43,7 @@ Vault is configured to use a `consul` [secret backend](https://www.vaultproject.
 - [Vault for Local Development](#vault-for-local-development)
   - [Start Consul and Vault](#start-consul-and-vault)
   - [Getting Vault Ready](#getting-vault-ready)
-  - [Python Setup](#python-setup)
+    - [Backups](#backups)
   - [README from forked repo:](#readme-from-forked-repo)
   - [Start Consul and Vault](#start-consul-and-vault-1)
   - [Getting Vault Ready](#getting-vault-ready-1)
