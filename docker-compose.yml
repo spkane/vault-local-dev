@@ -34,6 +34,7 @@ services:
       - ./config/vault/policies:/policies:z
       - ./certs:/certs:z
       - ./tools/wait-for-it.sh:/wait-for-it.sh:z
+      - ./audit:/audit:z
     entrypoint: /wait-for-it.sh -t 20 -h consul -p 8500 -s -- vault server -config=/config/vault.hcl
 networks:
   vault:

@@ -4,3 +4,5 @@
 *.csr
 *.srl
 ca.key
+private*
+*.log
