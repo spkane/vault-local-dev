@@ -1,6 +1,6 @@
 # Vault for Local Development
 
-This is a docker-compose setup for development work using Vault and Consul.
+This is a docker compose setup for development work using Vault and Consul.
 
 * FORKED from:
     * https://github.com/tolitius/cault
@@ -13,24 +13,41 @@ export VAULT_CAPATH="${PWD}/certs/ca.crt"
 docker compose up -d
 ```
 
+* [Vault UI](https://127.0.0.1:8200/ui)
+* [Consul UI](http://127.0.0.1:8500/ui)
+
 ## Getting Vault Ready
 
 * **NOTE**: It is a good idea to use the same version of the vault CLI as we are using for the vault server!
+
+### Bootstrap
+
+You can Bootstrap Vault via the [Vault UI](https://127.0.0.1:8200/ui) or the command line.
+
+### Command Line
 
 * Run `vault operator init` to create the unseal keys and initial root token.
   * If you see `* Vault is already initialized` then you have done this already.
   * Take a note of these! If you lose, you will need to start again.
 * Run `vault operator unseal` three times in a row, giving Vault a different one of the 5 unseal keys.
-  * The output will container a line that reads `Unseal Progress`. You need to get this to `Unseal Progress    3/3`.
+  * The output will container a line that starts with `Unseal Progress`. You want this line to completely go away and for the line `Sealed` to read `false`.
 * After vault is unsealed, run `vault login` with the Initial Root Token that you got after running `vault operator init` earlier.
 
-### Backups
+### Backup & Restore
 
 * **NOTE**: This container does not persist ANY data as the consul node is in dev mode.
-  * If you want to save the data for later use, install the consul client locally and then try: `consul snapshot save backups/vault-consul-backup-$(date +%Y%m%d%H%M).snap`
-  * `docker-compose pause` and `docker-compose unpause` are the only ways that you can stop the containers from running and still keep the data around. This does not survive a reboot, meaning you will need to restore and unseal after containers stop.
 
----
+* `docker compose pause` and `docker compose unpause` are the only ways that you can stop the containers from running and still keep the data around without backing up and restoring the data. This does not survive a reboot, meaning you will need to restore and unseal after containers stop.
+
+#### Backup
+
+* If you want to save the data for later use, install the consul client locally and then try:
+  * `consul snapshot save backups/vault-consul-backup-$(date +%Y%m%d%H%M).snap`
+
+#### Restore
+
+* You can then restore with something like this:
+  * `consul snapshot restore ./backups/vault-consul-backup-202110021214.snap`
 
 ## README from forked repo:
 
@@ -43,7 +60,11 @@ Vault is configured to use a `consul` [secret backend](https://www.vaultproject.
 - [Vault for Local Development](#vault-for-local-development)
   - [Start Consul and Vault](#start-consul-and-vault)
   - [Getting Vault Ready](#getting-vault-ready)
-    - [Backups](#backups)
+    - [Bootstrap](#bootstrap)
+    - [Command Line](#command-line)
+    - [Backup & Restore](#backup--restore)
+      - [Backup](#backup)
+      - [Restore](#restore)
   - [README from forked repo:](#readme-from-forked-repo)
   - [Start Consul and Vault](#start-consul-and-vault-1)
   - [Getting Vault Ready](#getting-vault-ready-1)
