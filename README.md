@@ -30,7 +30,7 @@ You can Bootstrap Vault via the [Vault UI](https://127.0.0.1:8200/ui) or the com
   * If you see `* Vault is already initialized` then you have done this already.
   * Take a note of these! If you lose, you will need to start again.
 * Run `vault operator unseal` three times in a row, giving Vault a different one of the 5 unseal keys.
-  * The output will container a line that starts with `Unseal Progress`. You want this line to completely go away and for the line `Sealed` to read `false`.
+  * The output will contain a line that starts with `Unseal Progress`. You want this line to completely go away and for the line `Sealed` to read `false`.
 * After vault is unsealed, run `vault login` with the Initial Root Token that you got after running `vault operator init` earlier.
 
 ### Backup & Restore

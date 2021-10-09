@@ -11,6 +11,7 @@ services:
       - "8500:8500"
       - "8600:53/udp"
     volumes:
+      - ./backups:/backups:rw
       - ./config/consul/acls/:/consul/config/acls:ro
       - ./config/consul:/config:ro
       - ./certs:/certs:ro
@@ -24,7 +25,8 @@ services:
     cap_add:
       - IPC_LOCK
     environment:
-      VAULT_ADDR: http://127.0.0.1:8200
+      VAULT_ADDR: https://127.0.0.1:8200
+      VAULT_CACERT: /certs/ca.crt
     networks:
       - vault
     ports:
