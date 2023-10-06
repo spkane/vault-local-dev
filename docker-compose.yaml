@@ -1,6 +1,6 @@
 services:
   consul:
-    image: "hashicorp/consul:1.15.2"
+    image: "hashicorp/consul:1.16.2"
     hostname: "consul"
     command: "agent -dev -client 0.0.0.0"
     networks:
@@ -17,7 +17,7 @@ services:
   vault:
     depends_on:
       - consul
-    image: "hashicorp/vault:1.13.2"
+    image: "hashicorp/vault:1.15.0"
     hostname: "vault"
     links:
       - "consul:consul"
